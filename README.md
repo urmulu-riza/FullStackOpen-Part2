@@ -59,3 +59,11 @@ The function is
 ```
 
 The function gets a note object as a parameter and returns the value of its id field.
+
+### Anti-pattern: Array Indexes as Keys
+
+This is, however, **not recommended** and can create undesired problems even if it seems to be working just fine.
+
+Read more about this in [this article](https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318).
+
+### Refactoring Modules
