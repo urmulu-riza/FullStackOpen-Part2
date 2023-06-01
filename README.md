@@ -67,3 +67,21 @@ This is, however, **not recommended** and can create undesired problems even if 
 Read more about this in [this article](https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318).
 
 ### Refactoring Modules
+
+If we display a single note in its own component, the key attribute must now be defined for the Note components, and not for the li tags like before.
+
+Common practice is to declare each component in its own file as an ES6-module.
+
+In smaller applications, components are usually placed in a directory called components, which is in turn placed within the src directory. The convention is to name the file after the component.
+
+```js
+import App from './App';
+```
+
+imports the main component, the app module, and places it into the variable <i>App</i>.
+
+```js
+export default Note;
+```
+
+The last line of the module [exports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) the declared module, the variable <i>Note</i>.
