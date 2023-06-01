@@ -1,8 +1,10 @@
 const Header = ({ course }) => <h1>{course}</h1>;
 const Total = ({ parts }) => (
   <p>
-    Number of exercises{' '}
-    {parts.map((p) => p.exercises).reduce((a, cv) => a + cv)}
+    <b>
+      total of {parts.map((p) => p.exercises).reduce((a, cv) => a + cv)}{' '}
+      exercises
+    </b>
   </p>
 );
 const Part = ({ name, exercises }) => (
@@ -27,6 +29,7 @@ const Course = ({ course }) => (
 );
 const App = () => {
   const course = {
+    id: 1,
     name: 'Half Stack application development',
     parts: [
       {
