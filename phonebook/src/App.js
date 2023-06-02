@@ -1,19 +1,6 @@
 import { useState } from 'react';
-
-const Numbers = ({ persons, filtered }) => (
-  <div>
-    <h2>Numbers</h2>
-    <ul>
-      {persons
-        .filter((p) => p.name.toLowerCase().includes(filtered.toLowerCase()))
-        .map((p) => (
-          <li key={p.name}>
-            {p.name} {p.number}
-          </li>
-        ))}
-    </ul>
-  </div>
-);
+import Form from './components/Form';
+import Numbers from './components/Number';
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -52,30 +39,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          filter shown with:
-          <input
-            value={filtered}
-            onChange={(e) => handleChange(e, 'filtered')}
-          />
-        </div>
-        <h2>Add a new contact:</h2>
-        <div>
-          name:
-          <input value={newName} onChange={(e) => handleChange(e, 'name')} />
-        </div>
-        <div>
-          number:
-          <input
-            value={newNumber}
-            onChange={(e) => handleChange(e, 'number')}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Form {...{ addPerson, filtered, handleChange, newName, newNumber }} />
       {/* <p>debug:{newName}</p> */}
       <Numbers persons={persons} filtered={filtered} />
     </div>
