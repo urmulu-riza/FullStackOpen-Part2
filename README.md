@@ -85,3 +85,77 @@ export default Note;
 ```
 
 The last line of the module [exports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) the declared module, the variable <i>Note</i>.
+
+## b.forms
+
+```js
+const addNote = (event) => {
+  event.preventDefault();
+  console.log('button clicked', event.target);
+};
+```
+
+The <em>event</em> parameter is the [event](https://react.dev/learn/responding-to-events) that triggers the call to the event handler function:
+
+The event handler immediately calls the <em>event.preventDefault()</em> method, which prevents the default action of submitting a form. The default action would, [among other things](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event), cause the page to reload.
+
+The target of the event stored in _event.target_ in this case is the form that we have defined in our component.
+
+### Controlled component
+
+There are many ways to accomplish this; the first method we will take a look at is through the use of so-called [controlled components](https://react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable).
+
+When performing comparisons, it's therefore safer to exclusively use <em>val1 === val2</em>. You can read more about the topic [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness).
+
+```js
+import { useState } from 'react';
+import Note from './components/Note';
+
+const App = (props) => {
+  const [notes, setNotes] = useState(props.notes);
+  const [newNote, setNewNote] = useState('');
+  const [showAll, setShowAll] = useState(false);
+
+  const addNote = (event) => {
+    event.preventDefault();
+    const noteObject = {
+      content: newNote,
+      important: Math.random() > 0.5,
+      id: notes.length + 1,
+    };
+
+    setNotes(notes.concat(noteObject));
+    setNewNote('');
+  };
+
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.value);
+  };
+
+  const notesToShow = showAll ? notes : notes.filter((note) => note.important); //or note.important===true
+
+  return (
+    <div>
+      <h1>Notes</h1>
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? 'important' : 'all'}
+        </button>
+      </div>
+      <ul>
+        <ul>
+          {notesToShow.map((note) => (
+            <Note key={note.id} note={note} />
+          ))}
+        </ul>
+      </ul>
+      <form onSubmit={addNote}>
+        <input value={newNote} onChange={handleNoteChange} />
+        <button type="submit">save</button>
+      </form>
+    </div>
+  );
+};
+
+export default App;
+```
