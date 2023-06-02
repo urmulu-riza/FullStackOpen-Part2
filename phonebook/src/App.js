@@ -1,23 +1,29 @@
 import { useState } from 'react';
 
-const Numbers = ({ persons }) => (
+const Numbers = ({ persons, filtered }) => (
   <div>
     <h2>Numbers</h2>
     <ul>
-      {persons.map((p) => (
-        <li key={p.name}>
-          {p.name} {p.number}
-        </li>
-      ))}
+      {persons
+        .filter((p) => p.name.toLowerCase().includes(filtered.toLowerCase()))
+        .map((p) => (
+          <li key={p.name}>
+            {p.name} {p.number}
+          </li>
+        ))}
     </ul>
   </div>
 );
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1234567' },
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' },
   ]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [filtered, setFiltered] = useState('');
 
   const handleChange = (e, type) => {
     switch (type) {
@@ -26,6 +32,9 @@ const App = () => {
         break;
       case 'number':
         setNewNumber(e.target.value);
+        break;
+      case 'filtered':
+        setFiltered(e.target.value);
         break;
       default:
         break;
@@ -45,6 +54,14 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
         <div>
+          filter shown with:
+          <input
+            value={filtered}
+            onChange={(e) => handleChange(e, 'filtered')}
+          />
+        </div>
+        <h2>Add a new contact:</h2>
+        <div>
           name:
           <input value={newName} onChange={(e) => handleChange(e, 'name')} />
         </div>
@@ -60,7 +77,7 @@ const App = () => {
         </div>
       </form>
       {/* <p>debug:{newName}</p> */}
-      <Numbers persons={persons} />
+      <Numbers persons={persons} filtered={filtered} />
     </div>
   );
 };
