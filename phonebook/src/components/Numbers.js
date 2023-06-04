@@ -1,4 +1,4 @@
-const Numbers = ({ persons, filtered }) => (
+const Numbers = ({ persons, filtered, deletePerson }) => (
   <div>
     <h2>Numbers</h2>
     <ul>
@@ -7,6 +7,7 @@ const Numbers = ({ persons, filtered }) => (
         .map((p) => (
           <li key={p.name}>
             {p.name} {p.number}
+            <button onClick={() => deletePerson(p.id)}>Delete</button>
           </li>
         ))}
     </ul>

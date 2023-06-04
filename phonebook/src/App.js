@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Form from './components/Form';
-import Numbers from './components/Number';
+import Numbers from './components/Numbers';
 import Persons from './services/persons';
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -45,12 +45,21 @@ const App = () => {
       setNewNumber('');
     });
   };
+  const deletePerson = (id) => {
+    const del = persons.find((p) => p.id === id);
+    window.confirm(`Delete ${del.name}`) &&
+      Persons.deleteAxios(id)
+        .then((r) => setPersons(persons.filter((p) => p.id !== id)))
+        .catch((err) => {
+          alert(err);
+        });
+  };
   return (
     <div>
       <h2>Phonebook</h2>
       <Form {...{ addPerson, filtered, handleChange, newName, newNumber }} />
       {/* <p>debug:{newName}</p> */}
-      <Numbers persons={persons} filtered={filtered} />
+      <Numbers {...{ persons, filtered, deletePerson }} />
     </div>
   );
 };
