@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Form from './components/Form';
 import Numbers from './components/Numbers';
 import Persons from './services/persons';
@@ -34,20 +33,34 @@ const App = () => {
         break;
     }
   };
+  const duplicate = (dup) => {
+    if (dup.number === newNumber)
+      return alert(`${newName} is already added to phonebook`);
+    if (
+      window.confirm(
+        `${newName} is already added to the phonebook, replace the old number with a new one?`
+      )
+    )
+      Persons.update(dup.id, { ...dup, number: newNumber }).then((r) =>
+        setPersons(persons.map((p) => (p.id !== dup.id ? p : r)))
+      );
+  };
   const addPerson = (e) => {
     e.preventDefault();
-    if (persons.filter((p) => p.name === newName)[0])
-      //'some' method can be used too
-      return alert(`${newName} is already added to phonebook`);
-    Persons.create({ name: newName, number: newNumber }).then((r) => {
-      setPersons(persons.concat(r));
-      setNewName('');
-      setNewNumber('');
-    });
+    const dup = persons.filter((p) => p.name === newName)[0];
+    //'some' method can be used too
+    if (dup) {
+      duplicate(dup);
+    } else {
+      Persons.create({ name: newName, number: newNumber }).then((r) => {
+        setPersons(persons.concat(r));
+        setNewName('');
+        setNewNumber('');
+      });
+    }
   };
   const deletePerson = (id) => {
-    const del = persons.find((p) => p.id === id);
-    window.confirm(`Delete ${del.name}`) &&
+    window.confirm(`Delete ${persons.find((p) => p.id === id).name}?`) &&
       Persons.deleteAxios(id)
         .then((r) => setPersons(persons.filter((p) => p.id !== id)))
         .catch((err) => {
