@@ -14,8 +14,8 @@ const App = () => {
   const [filtered, setFiltered] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data);
+    Persons.getAll().then((initalPersons) => {
+      setPersons(initalPersons);
     });
   }, []);
 
@@ -40,7 +40,7 @@ const App = () => {
       //'some' method can be used too
       return alert(`${newName} is already added to phonebook`);
     Persons.create({ name: newName, number: newNumber }).then((r) => {
-      setPersons(persons.concat(r.data));
+      setPersons(persons.concat(r));
       setNewName('');
       setNewNumber('');
     });
