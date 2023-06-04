@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Form from './components/Form';
 import Numbers from './components/Number';
+import Persons from './services/persons';
 const App = () => {
   const [persons, setPersons] = useState([]);
   // [{ name: 'Arto Hellas', number: '040-123456' },
@@ -38,9 +39,11 @@ const App = () => {
     if (persons.filter((p) => p.name === newName)[0])
       //'some' method can be used too
       return alert(`${newName} is already added to phonebook`);
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setNewName('');
-    setNewNumber('');
+    Persons.create({ name: newName, number: newNumber }).then((r) => {
+      setPersons(persons.concat(r.data));
+      setNewName('');
+      setNewNumber('');
+    });
   };
   return (
     <div>
