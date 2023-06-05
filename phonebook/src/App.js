@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Form from './components/Form';
 import Numbers from './components/Numbers';
 import Persons from './services/persons';
+import Notification from './components/Notification';
 const App = () => {
   const [persons, setPersons] = useState([]);
   // [{ name: 'Arto Hellas', number: '040-123456' },
@@ -11,7 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filtered, setFiltered] = useState('');
-
+  const [message, setMessage] = useState();
   useEffect(() => {
     Persons.getAll().then((initalPersons) => {
       setPersons(initalPersons);
@@ -33,6 +34,11 @@ const App = () => {
         break;
     }
   };
+  const removeMessage = () => {
+    setTimeout(() => {
+      setMessage();
+    }, 4000);
+  };
   const duplicate = (dup) => {
     if (dup.number === newNumber)
       return alert(`${newName} is already added to phonebook`);
@@ -41,9 +47,11 @@ const App = () => {
         `${newName} is already added to the phonebook, replace the old number with a new one?`
       )
     )
-      Persons.update(dup.id, { ...dup, number: newNumber }).then((r) =>
-        setPersons(persons.map((p) => (p.id !== dup.id ? p : r)))
-      );
+      Persons.update(dup.id, { ...dup, number: newNumber }).then((r) => {
+        setPersons(persons.map((p) => (p.id !== dup.id ? p : r)));
+        setMessage({ content: `Updated ${r.name}`, type: 'success' });
+        removeMessage();
+      });
   };
   const addPerson = (e) => {
     e.preventDefault();
@@ -54,6 +62,8 @@ const App = () => {
     } else {
       Persons.create({ name: newName, number: newNumber }).then((r) => {
         setPersons(persons.concat(r));
+        setMessage({ content: `Added ${r.name}`, type: 'success' });
+        removeMessage();
         setNewName('');
         setNewNumber('');
       });
@@ -70,6 +80,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Form {...{ addPerson, filtered, handleChange, newName, newNumber }} />
       {/* <p>debug:{newName}</p> */}
       <Numbers {...{ persons, filtered, deletePerson }} />
