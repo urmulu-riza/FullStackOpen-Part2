@@ -14,7 +14,7 @@ const Notification = ({ message }) => {
       className={message.type === 'error' ? 'error' : 'success'}
       style={messageStyle}
     >
-      {message.content}
+      {message.message}
     </div>
   ) : null;
 };

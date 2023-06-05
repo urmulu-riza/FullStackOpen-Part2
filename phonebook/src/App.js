@@ -34,11 +34,17 @@ const App = () => {
         break;
     }
   };
-  const removeMessage = () => {
+  const messageHandler = (message, type) => {
+    setMessage({ message, type });
     setTimeout(() => {
       setMessage();
-    }, 4000);
+    }, 2000);
   };
+  const refreshInputs = () => {
+    setNewName('');
+    setNewNumber('');
+  };
+
   const duplicate = (dup) => {
     if (dup.number === newNumber)
       return alert(`${newName} is already added to phonebook`);
@@ -47,11 +53,20 @@ const App = () => {
         `${newName} is already added to the phonebook, replace the old number with a new one?`
       )
     )
-      Persons.update(dup.id, { ...dup, number: newNumber }).then((r) => {
-        setPersons(persons.map((p) => (p.id !== dup.id ? p : r)));
-        setMessage({ content: `Updated ${r.name}`, type: 'success' });
-        removeMessage();
-      });
+      Persons.update(dup.id, { ...dup, number: newNumber })
+        .then((r) => {
+          setPersons(persons.map((p) => (p.id !== dup.id ? p : r)));
+          messageHandler(`Updated ${r.name}`, 'success');
+          refreshInputs();
+        })
+        .catch((err) => {
+          messageHandler(
+            `information of ${newName} has already been removed from server`,
+            'error'
+          );
+          refreshInputs();
+          setPersons(persons.filter((p) => p.id !== dup.id));
+        });
   };
   const addPerson = (e) => {
     e.preventDefault();
@@ -62,19 +77,21 @@ const App = () => {
     } else {
       Persons.create({ name: newName, number: newNumber }).then((r) => {
         setPersons(persons.concat(r));
-        setMessage({ content: `Added ${r.name}`, type: 'success' });
-        removeMessage();
-        setNewName('');
-        setNewNumber('');
+        messageHandler(`Added ${r.name}`, 'success');
+        refreshInputs();
       });
     }
   };
   const deletePerson = (id) => {
     window.confirm(`Delete ${persons.find((p) => p.id === id).name}?`) &&
       Persons.deleteAxios(id)
-        .then((r) => setPersons(persons.filter((p) => p.id !== id)))
+        .then((r) => {
+          setPersons(persons.filter((p) => p.id !== id));
+          messageHandler(`Deleted the user successfully`, 'success');
+        })
         .catch((err) => {
-          alert(err);
+          messageHandler(`The user already has been deleted`, 'error');
+          setPersons(persons.filter((p) => p.id !== id));
         });
   };
   return (
