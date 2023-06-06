@@ -5,12 +5,13 @@ const App = () => {
   const [value, setValue] = useState('');
   const [countriesList, setCountriesList] = useState([]);
   useEffect(() => {
+    // `https://studies.cs.helsinki.fi/restcountries/api/all`
     axios
-      .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
+      .get(`https://restcountries.com/v3.1/all`)
       .then((r) => {
         setCountriesList(r.data);
-      });
-    // .catch((err) => {});
+      })
+      .catch((err) => console.log(err));
   }, []);
   const changeHandler = (e) => {
     setValue(e.target.value);
@@ -32,3 +33,5 @@ const App = () => {
 };
 
 export default App;
+
+//bash: REACT_APP_API_KEY={API CODE} npm start
